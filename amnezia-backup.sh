@@ -25,7 +25,7 @@ is_blacklisted() {
 # Function to perform the actual /opt/ backup for a single container
 backup_container_opt() {
     local CONTAINER_NAME="$1"
-    local BACKUP_FILE="$BACKUP_DIR/$CONTAINER_NAME-opt-$DATE_SUFFIX.tar.gz"
+    local BACKUP_FILE="$BACKUP_DIR/${CONTAINER_NAME}_opt_${DATE_SUFFIX}.tar.gz"
     
     echo "--- Starting /opt/ backup for $CONTAINER_NAME ---"
     
@@ -34,7 +34,7 @@ backup_container_opt() {
     
     # 2. Copy /opt/ out of the container
     echo "  Copying /opt/ from container..."
-    if ! docker cp "$CONTAINER_NAME":/opt/ "$TEMP_DIR/${CONTAINER_NAME}-opt"; then
+    if ! docker cp "$CONTAINER_NAME":/opt/ "$TEMP_DIR/${CONTAINER_NAME}_opt"; then
         echo "  ERROR: Failed to copy /opt/ using docker cp. Skipping."
         rm -rf "$TEMP_DIR"
         return 1
@@ -42,7 +42,7 @@ backup_container_opt() {
 
     # 3. Compress the copied /opt/ directory into a single tar.gz
     echo "  Compressing into $BACKUP_FILE..."
-    if ! tar czf "$BACKUP_FILE" -C "$TEMP_DIR" "${CONTAINER_NAME}-opt"; then
+    if ! tar czf "$BACKUP_FILE" -C "$TEMP_DIR" "${CONTAINER_NAME}_opt"; then
         echo "  ERROR: Failed to create tar.gz archive. Skipping."
         rm -rf "$TEMP_DIR"
         return 1
@@ -59,7 +59,7 @@ backup_container_opt() {
 restore_container_opt() {
     local CONTAINER_NAME="$1"
     
-    local LATEST_BACKUP=$(ls -t "$BACKUP_DIR/$CONTAINER_NAME"-opt-*.tar.gz 2>/dev/null | head -n 1)
+    local LATEST_BACKUP=$(ls -t "$BACKUP_DIR/$CONTAINER_NAME"_opt_*.tar.gz 2>/dev/null | head -n 1)
 
     if [[ -z "$LATEST_BACKUP" ]]; then
         echo "ERROR: No /opt/ backup found for $CONTAINER_NAME in $BACKUP_DIR. Skipping restore."
@@ -85,7 +85,7 @@ restore_container_opt() {
     fi
     
     echo "  Copying /opt/ content back into container..."
-    if docker cp "$TEMP_DIR/${CONTAINER_NAME}-opt/." "$CONTAINER_NAME:/opt/"; then
+    if docker cp "$TEMP_DIR/${CONTAINER_NAME}_opt/." "$CONTAINER_NAME:/opt/"; then
         echo "  SUCCESS: /opt/ content updated."
     else
         echo "  ERROR: docker cp failed. Manual check required."
