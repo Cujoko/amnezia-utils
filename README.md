@@ -1,35 +1,37 @@
-# Amnezia Backup Tool
+# Amnezia Utils
+
+## Amnezia Backup Tool
 
 Backs up and restores your Amnezia VPN containers.
 
-## What it does
+### What it does
 
 - Creates backup of users with date/time stamps
 - Can restore from backups when needed
 
-## How to use
+### How to use
 
-### Make a backup
+#### Make a backup
 ```bash
-./amnezia-backup.sh
+./backup.sh
 ```
 
-### Restore from backup  
+#### Restore from backup  
 ```bash
-./amnezia-backup.sh -r
+./backup.sh -r
 ```
 
-## What you need
+### What you need
 
 - Docker running on your system
 - This script file
 - Enough disk space for backups
 
-## Where backups go
+### Where backups go
 
-Backups are saved in a directory `./amnezia_opt_backups/`
+Backups are saved in a directory `./amnezia-opt-backups/`
 
-## Important
+### Important
 
 - Restoring will restart your containers
 - Test restores carefully 
